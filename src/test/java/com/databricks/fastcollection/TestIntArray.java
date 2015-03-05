@@ -23,7 +23,7 @@ public class TestIntArray {
 
   private IntArray createTestData() {
     byte[] bytes = new byte[16];
-    IntArray arr = new DefaultIntArray(MemoryBlock.fromByteArray(bytes));
+    IntArray arr = new IntArray(MemoryBlock.fromByteArray(bytes));
     arr.set(0, 1);
     arr.set(1, 2);
     arr.set(2, 3);

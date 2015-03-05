@@ -26,9 +26,9 @@ import org.junit.Test;
 public class TestLongToLongMap {
 
   private LongToLongMap createEmptyMap(int size) {
-    DefaultLongArray larr = new DefaultLongArray(MemoryBlock.fromLongArray(new long[size * 2]));
-    DefaultBitSet bitset = new DefaultBitSet(MemoryBlock.fromLongArray(new long[size / 64]));
-    return new DefaultLongToLongMap(larr, bitset);
+    LongArray larr = new LongArray(MemoryBlock.fromLongArray(new long[size * 2]));
+    BitSet bitset = new BitSet(MemoryBlock.fromLongArray(new long[size / 64]));
+    return new LongToLongMap(larr, bitset);
   }
 
   @Test

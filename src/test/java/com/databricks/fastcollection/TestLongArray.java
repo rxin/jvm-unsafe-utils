@@ -23,7 +23,7 @@ public class TestLongArray {
 
   private LongArray createTestData() {
     byte[] bytes = new byte[16];
-    LongArray arr = new DefaultLongArray(MemoryBlock.fromByteArray(bytes));
+    LongArray arr = new LongArray(MemoryBlock.fromByteArray(bytes));
     arr.set(0, 1L);
     arr.set(1, 2L);
     arr.set(1, 3L);

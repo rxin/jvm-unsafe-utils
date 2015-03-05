@@ -13,6 +13,10 @@
  */
 
 /*
+ * This was adapted from Guava's implementation of Murmur3 hash.
+ */
+
+/*
  * MurmurHash3 was written by Austin Appleby, and is placed in the public
  * domain. The author hereby disclaims copyright to this source code.
  */
@@ -26,12 +30,7 @@
 package com.databricks.fastcollection.util;
 
 /**
- * See http://smhasher.googlecode.com/svn/trunk/MurmurHash3.cpp
- * MurmurHash3_x86_32
- *
- * @author Austin Appleby
- * @author Dimitris Andreou
- * @author Kurt Alfred Kluever
+ * 32-bit Murmur3 hasher.
  */
 public final class Murmur3_x86_32 {
   private static final int C1 = 0xcc9e2d51;

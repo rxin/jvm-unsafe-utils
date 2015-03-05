@@ -24,26 +24,65 @@ package com.databricks.fastcollection;
  *   <li>has no bound checking, and thus can crash the JVM process when assert is turned off</li>
  * </ul>
  */
-public interface IntArray {
+public final class IntArray {
+
+  private static final int WIDTH = 4;
+  private static final long ARRAY_OFFSET = PlatformDependent.INT_ARRAY_OFFSET;
+
+  private final Object baseObj;
+  private final long baseOffset;
+
+  private final long length;
+
+  public IntArray(MemoryBlock memory) {
+    assert memory.size() % WIDTH == 0 : "Memory not aligned (" + memory.size() + ")";
+    this.baseObj = memory.getBaseObject();
+    this.baseOffset = memory.getBaseOffset();
+    this.length = memory.size() / WIDTH;
+  }
 
   /**
    * Returns the number of elements this array can hold.
    */
-  public long size();
+  public long size() {
+    return length;
+  }
 
   /**
-   * Sets the value at position index.
+   * Sets the value at position {@code index}.
    */
-  public void set(long index, int value);
+  public void set(long index, int value) {
+    assert index >= 0 : "index (" + index + ") should >= 0";
+    assert index < length : "index (" + index + ") should < length (" + length + ")";
+    PlatformDependent.UNSAFE.putInt(baseObj, baseOffset + index * WIDTH, value);
+  }
 
   /**
-   * Returns the value at position index.
+   * Returns the value at position {@code index}.
    */
-  public int get(long index);
+  public int get(long index) {
+    assert index >= 0 : "index (" + index + ") should >= 0";
+    assert index < length : "index (" + index + ") should < length (" + length + ")";
+    return PlatformDependent.UNSAFE.getInt(baseObj, baseOffset + index * WIDTH);
+  }
 
   /**
    * Returns a copy of the array as a JVM native array. The caller should make sure this array's
    * length is less than {@code Integer.MAX_VALUE}.
    */
-  public int[] toJvmArray() throws IndexOutOfBoundsException;
+  public int[] toJvmArray() throws IndexOutOfBoundsException {
+    if (length > Integer.MAX_VALUE) {
+      throw new IndexOutOfBoundsException(
+        "array size (" + length + ") too large and cannot be converted into JVM array");
+    }
+
+    final int[] arr = new int[(int) length];
+    PlatformDependent.UNSAFE.copyMemory(
+      baseObj,
+      baseOffset,
+      arr,
+      ARRAY_OFFSET,
+      length * WIDTH);
+    return arr;
+  }
 }

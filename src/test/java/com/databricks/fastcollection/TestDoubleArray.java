@@ -23,7 +23,7 @@ public class TestDoubleArray {
 
   private DoubleArray createTestData() {
     byte[] bytes = new byte[16];
-    DoubleArray arr = new DefaultDoubleArray(MemoryBlock.fromByteArray(bytes));
+    DoubleArray arr = new DoubleArray(MemoryBlock.fromByteArray(bytes));
     arr.set(0, 1.0);
     arr.set(1, 2.0);
     arr.set(1, 3.0);
