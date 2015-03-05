@@ -40,6 +40,8 @@ final class DefaultDoubleArray implements DoubleArray {
 
   @Override
   public void set(long index, double value) {
+    assert index >= 0 : "index (" + index + ") should >= 0";
+    assert index < length : "index (" + index + ") should < length (" + length + ")";
     PlatformDependent.UNSAFE.putDouble(baseObj, baseOffset + index * WIDTH, value);
   }
 

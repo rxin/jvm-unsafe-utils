@@ -49,14 +49,15 @@ public interface BitSet {
   /**
    * Returns the index of the first bit that is set to true that occurs on or after the
    * specified starting index. If no such bit exists then {@code -1} is returned.
-   *
+   * <p>
    * To iterate over the true bits in a BitSet, use the following loop:
-   *
+   * <pre>
    * <code>
    *  for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i+1)) {
    *    // operate on index i here
    *  }
    * </code>
+   * </pre>
    *
    * @param fromIndex the index to start checking from (inclusive)
    * @return the index of the next set bit, or -1 if there is no such bit

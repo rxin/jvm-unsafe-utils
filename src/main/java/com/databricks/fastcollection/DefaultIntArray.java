@@ -40,6 +40,8 @@ final class DefaultIntArray implements IntArray {
 
   @Override
   public void set(long index, int value) {
+    assert index >= 0 : "index (" + index + ") should >= 0";
+    assert index < length : "index (" + index + ") should < length (" + length + ")";
     PlatformDependent.UNSAFE.putInt(baseObj, baseOffset + index * WIDTH, value);
   }
 
