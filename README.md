@@ -10,4 +10,4 @@ A high-performance library designed for Big Data analytics:
 - In-memory layout definition of tuples
 - Explicit memory management to avoid garbage collections and improve cache locality
 
-Twitter: @rxin
+Twitter: [@rxin](https://twitter.com/rxin)
