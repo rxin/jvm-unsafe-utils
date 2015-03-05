@@ -1,5 +1,7 @@
 # Fast JVM collection library
 
+[![Build Status](https://travis-ci.org/rxin/fast-jvm-collection.svg?branch=master)](https://travis-ci.org/rxin/fast-jvm-collection)
+
 This work is work-in-progress and yet to be named properly.
 
 A high-performance library designed for Big Data analytics:
