@@ -21,17 +21,56 @@ package com.databricks.fastcollection;
  */
 public interface LongToLongMap {
 
+  /**
+   * Returns the number of keys defined in the map.
+   */
   public long size();
 
+  /**
+   * Returns true if the key is defined in this map.
+   */
+  public boolean containsKey(long key);
+
+  /**
+   * Updates the value the key maps to.
+   */
   public void put(long key, long value);
 
+  /**
+   * Returns the value to which the specified key is mapped. In the case the key is not defined,
+   * this has undefined behavior.
+   */
   public long get(long key);
 
-  public Location getHandler(long key);
+  /**
+   * Looks up a key, and return a {@link Location} handle that can be used to test existence
+   * and read/write values.
+   */
+  public Location lookup(long key);
 
+  /**
+   * Handle returned by {@link LongToLongMap#lookup(long)} function.
+   */
   public static interface Location {
+
+    /**
+     * Returns true if the key is defined at this position, and false otherwise.
+     */
+    public boolean isDefined();
+
+    /**
+     * Returns the key defined at this position. Unspecified behavior if the key is not defined.
+     */
     public long getKey();
+
+    /**
+     * Returns the value defined at this position. Unspecified behavior if the key is not defined.
+     */
     public long getValue();
-    public long setValue(long value);
+
+    /**
+     * Updates the value defined at this position. Unspecified behavior if the key is not defined.
+     */
+    public void setValue(long value);
   }
 }

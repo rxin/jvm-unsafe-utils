@@ -33,9 +33,9 @@ public class TestDoubleArray {
   @Test
   public void basicTest() {
     DoubleArray arr = createTestData();
-    Assert.assertEquals(arr.size(), 2);
-    Assert.assertEquals(arr.get(0), 1.0, 0.00000000001);
-    Assert.assertEquals(arr.get(1), 3.0, 0.00000000001);
+    Assert.assertEquals(2, arr.size());
+    Assert.assertEquals(1.0, arr.get(0), 0.00000000001);
+    Assert.assertEquals(3.0, arr.get(1), 0.00000000001);
   }
 
   @Test

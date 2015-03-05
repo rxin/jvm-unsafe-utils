@@ -33,9 +33,9 @@ public class TestLongArray {
   @Test
   public void basicTest() {
     LongArray arr = createTestData();
-    Assert.assertEquals(arr.size(), 2);
-    Assert.assertEquals(arr.get(0), 1L);
-    Assert.assertEquals(arr.get(1), 3L);
+    Assert.assertEquals(2, arr.size());
+    Assert.assertEquals(1L, arr.get(0));
+    Assert.assertEquals(3L, arr.get(1));
   }
 
   @Test
