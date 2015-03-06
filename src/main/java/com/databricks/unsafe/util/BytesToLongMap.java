@@ -21,13 +21,19 @@ public class BytesToLongMap {
   private static final Murmur3_x86_32 HASHER = new Murmur3_x86_32(0);
 
   /** Bit mask for the lower 37 bits of a long. */
-  private static final long MASK_LONG_LOWER_37_BITS = 0b11111_11111111_11111111_11111111_11111111L;
+  private static final long MASK_LONG_LOWER_37_BITS = 0x1FFFFFFFFFL;
+  // 0b11111_11111111_11111111_11111111_11111111L;
 
   /** Bit mask for the upper 27 bits of a long. */
   private static final long MASK_LONG_UPPER_27_BITS = ~MASK_LONG_LOWER_37_BITS;
 
   /** Bit mask for the upper 27 bits of an int, i.e. bit 5 - 31 (inclusive) for a long. */
-  private static final int MASK_INT_UPPER_27_BITS = 0b11111111_11111111_11111111_11100000;
+  private static final int MASK_INT_UPPER_27_BITS;
+  // 0b11111111_11111111_11111111_11100000;
+
+  static {
+    MASK_INT_UPPER_27_BITS = ((1 << 27) - 1) << 5;
+  }
 
   /**
    * A single array to store the key and value.
