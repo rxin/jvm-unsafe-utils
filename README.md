@@ -1,6 +1,6 @@
 # JVM Unsafe Util Library
 
-[![Build Status](https://travis-ci.org/rxin/fast-jvm-collection.svg?branch=master)](https://travis-ci.org/rxin/jvm-unsafe-utils)
+[![Build Status](https://travis-ci.org/rxin/jvm-unsafe-utils.svg?branch=master)](https://travis-ci.org/rxin/jvm-unsafe-utils)
 
 This work is work-in-progress and yet to be named properly.
 
