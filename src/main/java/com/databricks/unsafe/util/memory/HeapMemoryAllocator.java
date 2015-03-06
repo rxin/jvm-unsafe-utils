@@ -28,7 +28,7 @@ public class HeapMemoryAllocator implements MemoryAllocator {
   }
 
   @Override
-  public void free(long address) {
+  public void free(MemoryBlock memory) {
     // Do nothing
   }
 }

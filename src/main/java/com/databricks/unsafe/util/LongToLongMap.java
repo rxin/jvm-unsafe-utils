@@ -32,19 +32,23 @@ public final class LongToLongMap {
 
   private static final Murmur3_x86_32 HASHER = new Murmur3_x86_32(0);
 
+  private static final HashMapGrowthStrategy growthStrategy = HashMapGrowthStrategy.DOUBLING;
+
+  private final MemoryAllocator allocator;
+
   /**
    * A single array to store the key and value.
    *
    * Position {@code 2 * i} in the array is used to track the key at index {@code i}, while
    * position {@code 2 * i + 1} in the array is used to track the value at index {@code i}.
    */
-  private final LongArray longArray;
+  private LongArray longArray;
 
   /**
    * A {@link BitSet} used to track location of the map where the key is set.
    * Size of the bitset should be half of the size of the long array.
    */
-  private final BitSet bitset;
+  private BitSet bitset;
 
   private final double loadFactor;
 
@@ -60,14 +64,10 @@ public final class LongToLongMap {
   private final Location loc;
 
   public LongToLongMap(MemoryAllocator allocator, long initialCapacity, double loadFactor) {
-    initialCapacity = Math.max(nextPowerOf2(initialCapacity), 16);
+    this.allocator = allocator;
     this.loadFactor = loadFactor;
-    longArray = new LongArray(allocator.allocate(initialCapacity * 8 * 2));
-    bitset = new BitSet(allocator.allocate(initialCapacity * 8));
-
-    this.growthThreshold = (long) (initialCapacity * loadFactor);
-    this.mask = initialCapacity - 1;
     this.loc = new Location();
+    allocate(initialCapacity);
   }
 
   public LongToLongMap(MemoryAllocator allocator, long initialCapacity) {
@@ -170,14 +170,68 @@ public final class LongToLongMap {
         size++;
         bitset.set(pos);
         longArray.set(pos * 2, key);
+        longArray.set(pos * 2 + 1, value);
+        if (size > growthThreshold) {
+          growAndRehash();
+        }
+      } else {
+        longArray.set(pos * 2 + 1, value);
       }
-      longArray.set(pos * 2 + 1, value);
     }
+  }
+
+  private void allocate(long capacity) {
+    capacity = Math.max(nextPowerOf2(capacity), 64);
+    longArray = new LongArray(allocator.allocate(capacity * 8 * 2));
+    bitset = new BitSet(allocator.allocate(capacity / 8));
+
+    this.growthThreshold = (long) (capacity * loadFactor);
+    this.mask = capacity - 1;
+  }
+
+  /**
+   * Grows the size of the hash table and re-hash everything.
+   */
+  private void growAndRehash() {
+    // Store references to the old data structures to be used when we re-hash
+    final LongArray oldLongArray = longArray;
+    final BitSet oldBitSet = bitset;
+    final long oldCapacity = oldBitSet.capacity();
+
+    // Allocate the new data structures
+    allocate(growthStrategy.nextCapacity(oldCapacity));
+
+    // Re-hash
+    for (long pos = oldBitSet.nextSetBit(0); pos >= 0; pos = oldBitSet.nextSetBit(pos + 1)) {
+      final long key = oldLongArray.get(pos * 2);
+      final long value = oldLongArray.get(pos * 2 + 1);
+      long newPos = HASHER.hashLong(key) & mask;
+      long step = 1;
+      boolean keepGoing = true;
+
+      // No need to check for equality here when we insert so this has one less if branch than
+      // the similar code path in addWithoutResize.
+      while (keepGoing) {
+        if (!bitset.isSet(newPos)) {
+          longArray.set(newPos * 2, key);
+          longArray.set(newPos * 2 + 1, value);
+          bitset.set(newPos);
+          keepGoing = false;
+        } else {
+          newPos = (newPos + step) & mask;
+          step++;
+        }
+      }
+    }
+
+    // Deallocate the old data structures.
+    allocator.free(oldLongArray.memoryBlock());
+    allocator.free(oldBitSet.memoryBlock());
   }
 
   /** Returns the next number greater or equal num that is power of 2. */
   private long nextPowerOf2(long num) {
-    long highBit = Long.highestOneBit(num);
+    final long highBit = Long.highestOneBit(num);
     return (highBit == num) ? num : highBit << 1;
   }
 }

@@ -25,7 +25,7 @@ import com.databricks.unsafe.util.PlatformDependent;
  */
 public class MemoryBlock extends MemoryLocation {
 
-  private final long length;
+  final long length;
 
   MemoryBlock(@Nullable Object obj, long offset, long length) {
     super(obj, offset);

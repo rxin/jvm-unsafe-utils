@@ -90,7 +90,7 @@ public class TestLongToLongMap {
   @Test
   public void stressTest() {
     // Stuff the thing to 90% full so we can trigger probing
-    LongToLongMap map = createEmptyMap(128);
+    LongToLongMap map = createEmptyMap(16);
     for (int i = 0; i < 128 * 0.9; i++) {
       map.put(i, i);
     }

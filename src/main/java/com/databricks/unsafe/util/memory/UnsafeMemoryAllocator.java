@@ -25,11 +25,15 @@ public class UnsafeMemoryAllocator implements MemoryAllocator {
 
   @Override
   public MemoryBlock allocate(long size) throws OutOfMemoryError {
-    return new MemoryBlock(null, PlatformDependent.UNSAFE.allocateMemory(size), size);
+    long address = PlatformDependent.UNSAFE.allocateMemory(size);
+    PlatformDependent.UNSAFE.setMemory(address, size, (byte) 0);
+    return new MemoryBlock(null, address, size);
   }
 
   @Override
-  public void free(long address) {
-    PlatformDependent.UNSAFE.freeMemory(address);
+  public void free(MemoryBlock memory) {
+    if (memory.obj != null) {
+      PlatformDependent.UNSAFE.freeMemory(memory.offset);
+    }
   }
 }

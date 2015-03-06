@@ -16,8 +16,23 @@
 
 package com.databricks.unsafe.util;
 
+/**
+ * Interface that defines how we can grow the size of a hash map when it is over a threshold.
+ */
 public interface HashMapGrowthStrategy {
 
   public long nextCapacity(long currentCapacity);
+
+  /**
+   * Double the size of the hash map every time.
+   */
+  public static final HashMapGrowthStrategy DOUBLING = new Doubling();
+
+  static class Doubling implements HashMapGrowthStrategy {
+    @Override
+    public long nextCapacity(long currentCapacity) {
+      return currentCapacity * 2;
+    }
+  }
 
 }

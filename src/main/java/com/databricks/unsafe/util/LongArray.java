@@ -31,6 +31,7 @@ public final class LongArray {
   private static final int WIDTH = 8;
   private static final long ARRAY_OFFSET = PlatformDependent.LONG_ARRAY_OFFSET;
 
+  private final MemoryBlock memory;
   private final Object baseObj;
   private final long baseOffset;
 
@@ -38,9 +39,14 @@ public final class LongArray {
 
   public LongArray(MemoryBlock memory) {
     assert memory.size() % WIDTH == 0 : "Memory not aligned (" + memory.size() + ")";
+    this.memory = memory;
     this.baseObj = memory.getBaseObject();
     this.baseOffset = memory.getBaseOffset();
     this.length = memory.size() / WIDTH;
+  }
+
+  public MemoryBlock memoryBlock() {
+    return memory;
   }
 
   /**

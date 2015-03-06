@@ -40,6 +40,10 @@ public final class BitSet {
     numWords = words.size();
   }
 
+  public MemoryBlock memoryBlock() {
+    return words.memoryBlock();
+  }
+
   /**
    * Returns the number of bits in this {@code BitSet}.
    */
@@ -97,7 +101,7 @@ public final class BitSet {
    * To iterate over the true bits in a BitSet, use the following loop:
    * <pre>
    * <code>
-   *  for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i+1)) {
+   *  for (long i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1)) {
    *    // operate on index i here
    *  }
    * </code>
@@ -106,7 +110,7 @@ public final class BitSet {
    * @param fromIndex the index to start checking from (inclusive)
    * @return the index of the next set bit, or -1 if there is no such bit
    */
-  public long nextSetBit(int fromIndex) {
+  public long nextSetBit(long fromIndex) {
     long wi = fromIndex >> 6;
     if (wi >= numWords) {
       return -1;

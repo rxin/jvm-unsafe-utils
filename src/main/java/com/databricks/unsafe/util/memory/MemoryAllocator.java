@@ -20,7 +20,7 @@ public interface MemoryAllocator {
 
   public MemoryBlock allocate(long size) throws OutOfMemoryError;
 
-  public void free(long address);
+  public void free(MemoryBlock memory);
 
   public static final MemoryAllocator UNSAFE = new UnsafeMemoryAllocator();
 

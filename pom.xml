@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.databricks</groupId>
-    <artifactId>fast-jvm-collection</artifactId>
+    <artifactId>jvm-unsafe-utils</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <build>
