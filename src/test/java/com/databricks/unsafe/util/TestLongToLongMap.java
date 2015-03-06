@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.databricks.fastcollection;
+package com.databricks.unsafe.util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,12 +23,12 @@ import java.util.Random;
 import junit.framework.Assert;
 import org.junit.Test;
 
+import com.databricks.unsafe.util.memory.MemoryAllocator;
+
 public class TestLongToLongMap {
 
   private LongToLongMap createEmptyMap(int size) {
-    LongArray larr = new LongArray(MemoryBlock.fromLongArray(new long[size * 2]));
-    BitSet bitset = new BitSet(MemoryBlock.fromLongArray(new long[size / 64]));
-    return new LongToLongMap(larr, bitset);
+    return new LongToLongMap(MemoryAllocator.UNSAFE, size);
   }
 
   @Test

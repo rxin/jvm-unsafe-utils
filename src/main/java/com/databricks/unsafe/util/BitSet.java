@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.databricks.fastcollection;
+package com.databricks.unsafe.util;
+
+import com.databricks.unsafe.util.memory.MemoryBlock;
 
 /**
  * A fixed size uncompressed bit set backed by a {@link LongArray}.

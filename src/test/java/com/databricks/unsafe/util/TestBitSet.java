@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package com.databricks.fastcollection;
+package com.databricks.unsafe.util;
 
 import junit.framework.Assert;
 import org.junit.Test;
+
+import com.databricks.unsafe.util.memory.MemoryBlock;
 
 public class TestBitSet {
 

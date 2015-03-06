@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package com.databricks.fastcollection;
+package com.databricks.unsafe.util;
 
 import java.lang.reflect.Field;
 
 import sun.misc.Unsafe;
 
-final class PlatformDependent {
+public final class PlatformDependent {
 
-  static final Unsafe UNSAFE;
+  public static final Unsafe UNSAFE;
 
-  static final int BYTE_ARRAY_OFFSET;
+  public static final int BYTE_ARRAY_OFFSET;
 
-  static final int INT_ARRAY_OFFSET;
+  public static final int INT_ARRAY_OFFSET;
 
-  static final int LONG_ARRAY_OFFSET;
+  public static final int LONG_ARRAY_OFFSET;
 
-  static final int DOUBLE_ARRAY_OFFSET;
+  public static final int DOUBLE_ARRAY_OFFSET;
 
   /**
    * Limits the number of bytes to copy per {@link Unsafe#copyMemory(long, long, long)} to
@@ -70,5 +70,12 @@ final class PlatformDependent {
       srcOffset += size;
       dstOffset += size;
     }
+  }
+
+  /**
+   * Raises an exception bypassing compiler checks for checked exceptions.
+   */
+  public static void throwException(Throwable t) {
+    UNSAFE.throwException(t);
   }
 }

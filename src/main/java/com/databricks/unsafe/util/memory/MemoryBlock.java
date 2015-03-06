@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.databricks.fastcollection;
+package com.databricks.unsafe.util.memory;
 
 import javax.annotation.Nullable;
+
+import com.databricks.unsafe.util.PlatformDependent;
 
 /**
  * A consecutive block of memory, starting at a {@link MemoryLocation} with a fixed size.

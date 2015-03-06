@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.databricks.fastcollection.util;
-
-import junit.framework.Assert;
-import org.junit.Test;
+package com.databricks.unsafe.util;
 
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+
+import junit.framework.Assert;
+import org.junit.Test;
 
 /**
  * Test file based on Guava's Murmur3Hash32Test.

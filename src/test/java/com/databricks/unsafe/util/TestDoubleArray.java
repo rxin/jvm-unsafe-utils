@@ -14,34 +14,36 @@
  * limitations under the License.
  */
 
-package com.databricks.fastcollection;
+package com.databricks.unsafe.util;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestLongArray {
+import com.databricks.unsafe.util.memory.MemoryBlock;
 
-  private LongArray createTestData() {
+public class TestDoubleArray {
+
+  private DoubleArray createTestData() {
     byte[] bytes = new byte[16];
-    LongArray arr = new LongArray(MemoryBlock.fromByteArray(bytes));
-    arr.set(0, 1L);
-    arr.set(1, 2L);
-    arr.set(1, 3L);
+    DoubleArray arr = new DoubleArray(MemoryBlock.fromByteArray(bytes));
+    arr.set(0, 1.0);
+    arr.set(1, 2.0);
+    arr.set(1, 3.0);
     return arr;
   }
 
   @Test
   public void basicTest() {
-    LongArray arr = createTestData();
+    DoubleArray arr = createTestData();
     Assert.assertEquals(2, arr.size());
-    Assert.assertEquals(1L, arr.get(0));
-    Assert.assertEquals(3L, arr.get(1));
+    Assert.assertEquals(1.0, arr.get(0), 0.00000000001);
+    Assert.assertEquals(3.0, arr.get(1), 0.00000000001);
   }
 
   @Test
   public void toJvmArray() {
-    LongArray arr = createTestData();
-    long[] expected = {1L, 3L};
-    Assert.assertArrayEquals(expected, arr.toJvmArray());
+    DoubleArray arr = createTestData();
+    double[] expected = {1.0, 3.0};
+    Assert.assertArrayEquals(expected, arr.toJvmArray(), 0.00000000001);
   }
 }

@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package com.databricks.fastcollection;
+package com.databricks.unsafe.util;
 
-import com.databricks.fastcollection.util.Murmur3_x86_32;
-
-/**
- * A long to long hash map.
- *
- * This is backed by a power-of-2-sized hash table, using quadratic probing with triangular numbers,
- * which is guaranteed to exhaust the space.
- *
- * Note that even though we use long for indexing, the map can support up to 2^31 keys because
- * we use 32 bit MurmurHash. In either case, if the key cardinality is so high, you should probably
- * be using sorting instead of hashing for better cache locality.
- */
-public final class LongToLongMap {
+public class BytesToLongMap {
 
   private static final Murmur3_x86_32 HASHER = new Murmur3_x86_32(0);
+
+  /** Bit mask for the lower 37 bits of a long. */
+  private static final long MASK_LONG_LOWER_37_BITS = 0b11111_11111111_11111111_11111111_11111111L;
+
+  /** Bit mask for the upper 27 bits of a long. */
+  private static final long MASK_LONG_UPPER_27_BITS = ~MASK_LONG_LOWER_37_BITS;
+
+  /** Bit mask for the upper 27 bits of an int, i.e. bit 5 - 31 (inclusive) for a long. */
+  private static final int MASK_INT_UPPER_27_BITS = 0b11111111_11111111_11111111_11100000;
 
   /**
    * A single array to store the key and value.
@@ -57,7 +54,7 @@ public final class LongToLongMap {
 
   private final Location loc;
 
-  public LongToLongMap(LongArray longArray, BitSet bitset) {
+  public BytesToLongMap(LongArray longArray, BitSet bitset) {
     assert longArray.size() == bitset.capacity() * 2 : "array (" + longArray.size() +
       ") should be twice the capacity of the bitset (" + bitset.capacity() + ")";
     this.longArray = longArray;
@@ -103,19 +100,24 @@ public final class LongToLongMap {
    * This function always return the same {@link Location} instance to avoid object allocation.
    */
   public Location lookup(long key) {
-    long pos = HASHER.hashLong(key) & mask;
+    long hashcode = HASHER.hashLong(key);
+    long partialKeyHashCode = (hashcode & MASK_INT_UPPER_27_BITS) >> 5;
+    long pos = hashcode & mask;
     long step = 1;
     while (true) {
       if (!bitset.isSet(pos)) {
         // This is a new key.
         return loc.with(pos, key, false);
-      } else if (longArray.get(pos * 2) == key) {
-        // Found an existing key.
-        return loc.with(pos, key, true);
       } else {
-        pos = (pos + step) & mask;
-        step++;
+        long stored = longArray.get(pos * 2);
+        if (((stored & MASK_LONG_UPPER_27_BITS) >> 27) == partialKeyHashCode) {
+          // Partial hash code matches. There is a high likelihood this is the place.
+          long pointer = stored & MASK_LONG_LOWER_37_BITS;
+          return loc.with(pos, key, true);
+        }
       }
+      pos = (pos + step) & mask;
+      step++;
     }
   }
 

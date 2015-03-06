@@ -27,7 +27,7 @@
  * (Modified to adapt to Guava coding conventions and to use the HashFunction interface)
  */
 
-package com.databricks.fastcollection.util;
+package com.databricks.unsafe.util;
 
 /**
  * 32-bit Murmur3 hasher.

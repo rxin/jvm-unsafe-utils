@@ -14,31 +14,22 @@
  * limitations under the License.
  */
 
-package com.databricks.fastcollection;
+package com.databricks.unsafe.util.memory;
 
-import javax.annotation.Nullable;
+import com.databricks.unsafe.util.PlatformDependent;
 
 /**
- * A memory location. Tracked either by a memory address (with off-heap allocation),
- * or by an offset from a JVM object (in-heap allocation).
+ * A simple {@link MemoryAllocator} that uses {@code Unsafe} to allocate off-heap memory.
  */
-public class MemoryLocation {
+public class UnsafeMemoryAllocator implements MemoryAllocator {
 
-  @Nullable
-  private final Object obj;
-
-  private final long offset;
-
-  MemoryLocation(@Nullable Object obj, long offset) {
-    this.obj = obj;
-    this.offset = offset;
+  @Override
+  public MemoryBlock allocate(long size) throws OutOfMemoryError {
+    return new MemoryBlock(null, PlatformDependent.UNSAFE.allocateMemory(size), size);
   }
 
-  public final Object getBaseObject() {
-    return obj;
-  }
-
-  public final long getBaseOffset() {
-    return offset;
+  @Override
+  public void free(long address) {
+    PlatformDependent.UNSAFE.freeMemory(address);
   }
 }
