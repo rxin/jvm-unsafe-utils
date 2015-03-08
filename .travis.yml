@@ -4,4 +4,5 @@ jdk:
   - oraclejdk7
   - openjdk7
   - openjdk6
-install: mvn clean test
+install: mvn -version
+script: mvn clean test
